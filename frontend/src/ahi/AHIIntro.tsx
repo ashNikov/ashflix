@@ -1,9 +1,34 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 export default function AHIIntro() {
+  const hasPlayedRef = useRef(false);
+
+  const playBoom = () => {
+    if (hasPlayedRef.current) return;
+
+    const boom = new Audio("/ah-boom.wav");
+    boom.volume = 1.0;
+    boom
+      .play()
+      .then(() => {
+        hasPlayedRef.current = true;
+      })
+      .catch(() => {
+        console.log("Autoplay blocked. Will try again on user click.");
+      });
+  };
+
+  useEffect(() => {
+    // Try autoplay on mount
+    playBoom();
+  }, []);
+
   return (
-    <div className="w-full h-screen bg-black flex items-center justify-center overflow-hidden">
+    <div
+      className="w-full h-screen bg-black flex items-center justify-center overflow-hidden"
+      onClick={playBoom} // Fallback: first click will trigger sound
+    >
       {/* subtle vignette */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_55%),radial-gradient(circle_at_top_left,rgba(248,113,113,0.15),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(248,113,113,0.15),transparent_55%)]" />
 
@@ -62,6 +87,34 @@ export default function AHIIntro() {
           </p>
         </motion.div>
       </motion.div>
+
+      {/* Powered by UWEM footer (animated) */}
+      <motion.div
+        className="absolute bottom-6 inset-x-0 text-center text-xs tracking-[0.2em] uppercase text-red-300"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{
+          opacity: 0.6,
+          y: 0,
+          transition: { delay: 1.4, duration: 0.5, ease: "easeOut" },
+        }}
+      >
+        <motion.span
+          initial={{ opacity: 0.6 }}
+          animate={{
+            opacity: [0.6, 1, 0.6],
+            scale: [1, 1.03, 1],
+          }}
+          transition={{
+            delay: 1.9,
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        >
+          Powered by <span className="font-bold text-red-400">UWEM</span>
+        </motion.span>
+      </motion.div>
     </div>
   );
 }
+

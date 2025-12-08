@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { movieSections, type MovieItem } from "../data/movies";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 
@@ -9,6 +10,7 @@ type SelectedMovie = {
 
 export default function Browse() {
   const [selected, setSelected] = useState<SelectedMovie | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white flex flex-col">
@@ -59,7 +61,10 @@ export default function Browse() {
               DevSecOps observability as the project grows.
             </p>
             <div className="flex flex-wrap gap-3 text-sm">
-              <button className="inline-flex items-center gap-2 rounded-md bg-white text-black px-4 py-2 font-semibold hover:bg-zinc-200 transition-colors">
+              <button
+                onClick={() => navigate("/watch")}
+                className="inline-flex items-center gap-2 rounded-md bg-white text-black px-4 py-2 font-semibold hover:bg-zinc-200 transition-colors"
+              >
                 ▶ Play Demo Stream
               </button>
               <button className="inline-flex items-center gap-2 rounded-md bg-zinc-800 text-white px-4 py-2 font-semibold border border-zinc-600 hover:bg-zinc-700 transition-colors">

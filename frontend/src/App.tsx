@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import AHIIntro from "./ahi/AHIIntro";
 import Login from "./pages/Login";
 import Browse from "./pages/Browse";
+import Watch from "./pages/Watch";
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
@@ -35,6 +36,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/browse" element={<Browse />} />
+              <Route path="/watch" element={<Watch />} />
             </Routes>
           </BrowserRouter>
         </motion.div>
@@ -44,3 +46,4 @@ function App() {
 }
 
 export default App;
+

@@ -81,14 +81,24 @@ export default function Browse() {
                     onClick={() =>
                       setSelected({ sectionTitle: section.title, item })
                     }
-                    className="relative w-40 h-24 md:w-52 md:h-32 flex-shrink-0 rounded-md bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-red-600 hover:-translate-y-1 transition-all duration-150"
+                    className="
+                      group relative w-40 h-24 md:w-52 md:h-32 flex-shrink-0 rounded-md
+                      bg-zinc-900 border border-zinc-800 overflow-hidden
+                      transition-all duration-300 ease-out
+                      hover:scale-[1.06]
+                      hover:border-red-600
+                      hover:shadow-[0_0_20px_rgba(248,113,113,0.45)]
+                    "
                   >
+                    {/* glow overlay */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-300 bg-gradient-to-t from-red-900/40 to-transparent" />
+                    {/* darken bottom for text */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    <span className="absolute bottom-2 left-2 text-[11px] text-zinc-200 font-medium">
+                    <span className="absolute bottom-2 left-2 text-[11px] text-zinc-200 font-medium group-hover:translate-y-[-2px] transition-all">
                       {item.title}
                     </span>
                     {item.tag && (
-                      <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full bg-red-600/80 text-white">
+                      <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full bg-red-600/80 text-white group-hover:scale-110 transition-transform">
                         {item.tag}
                       </span>
                     )}

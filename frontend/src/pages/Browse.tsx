@@ -35,8 +35,12 @@ export default function Browse() {
         {/* Hero */}
         <section className="relative px-8 py-10 md:py-16">
           <div className="max-w-3xl">
-            <p className="uppercase text-[11px] tracking-[0.3em] text-red-500 mb-3">
+            <p className="uppercase text-[11px] tracking-[0.3em] text-red-500">
               AshFlix Original · AI Curated
+            </p>
+            <p className="text-[10px] tracking-wider text-zinc-500 mb-3">
+              Powered by{" "}
+              <span className="text-red-500 font-semibold">UWEM</span>
             </p>
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Where cinematic streams meet intelligent automation.
@@ -93,3 +97,4 @@ export default function Browse() {
     </div>
   );
 }
+

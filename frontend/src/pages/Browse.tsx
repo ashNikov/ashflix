@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { movieSections, type MovieItem } from "../data/movies";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 
@@ -76,9 +77,25 @@ export default function Browse() {
 
         {/* Rows */}
         <main className="space-y-8 pb-10">
-          {movieSections.map((section) => (
-            <section key={section.id} className="px-8">
-              <h2 className="text-lg font-semibold mb-3">{section.title}</h2>
+          {movieSections.map((section, index) => (
+            <motion.section
+              key={section.id}
+              className="px-8"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+            >
+              <motion.h2
+                className="text-lg font-semibold mb-3 flex items-center gap-2"
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
+              >
+                <span>{section.title}</span>
+                <span className="h-px w-10 bg-red-600/70 rounded-full" />
+              </motion.h2>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {section.items.map((item) => (
                   <button
@@ -110,7 +127,7 @@ export default function Browse() {
                   </button>
                 ))}
               </div>
-            </section>
+            </motion.section>
           ))}
         </main>
       </div>

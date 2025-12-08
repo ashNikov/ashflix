@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { movieSections, type MovieItem } from "../data/movies";
 import MovieDetailsModal from "../components/MovieDetailsModal";
+import { getBackendStatus, getCatalogSections } from "../api/client";
 
 type SelectedMovie = {
   sectionTitle: string;
@@ -11,7 +12,27 @@ type SelectedMovie = {
 
 export default function Browse() {
   const [selected, setSelected] = useState<SelectedMovie | null>(null);
+  const [backendStatus, setBackendStatus] = useState<any | null>(null);
+
+  // frontend state for sections – start with local demo data as fallback
+  const [sections, setSections] = useState(movieSections);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // check backend health
+    getBackendStatus().then(setBackendStatus);
+
+    // fetch catalog sections from backend
+    getCatalogSections().then((data) => {
+      if (data && Array.isArray(data.sections)) {
+        setSections(data.sections);
+      } else {
+        // if API fails, we just keep using local movieSections
+        console.warn("Using local fallback sections – catalog API unavailable.");
+      }
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white flex flex-col">
@@ -75,9 +96,9 @@ export default function Browse() {
           </div>
         </section>
 
-        {/* Rows */}
+        {/* Rows (now driven by backend sections) */}
         <main className="space-y-8 pb-10">
-          {movieSections.map((section, index) => (
+          {sections.map((section: any, index: number) => (
             <motion.section
               key={section.id}
               className="px-8"
@@ -97,7 +118,7 @@ export default function Browse() {
                 <span className="h-px w-10 bg-red-600/70 rounded-full" />
               </motion.h2>
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {section.items.map((item) => (
+                {section.items.map((item: any) => (
                   <button
                     key={item.id}
                     onClick={() =>
@@ -112,9 +133,7 @@ export default function Browse() {
                       hover:shadow-[0_0_20px_rgba(248,113,113,0.45)]
                     "
                   >
-                    {/* glow overlay */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-300 bg-gradient-to-t from-red-900/40 to-transparent" />
-                    {/* darken bottom for text */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                     <span className="absolute bottom-2 left-2 text-[11px] text-zinc-200 font-medium group-hover:translate-y-[-2px] transition-all">
                       {item.title}
@@ -132,10 +151,15 @@ export default function Browse() {
         </main>
       </div>
 
-      {/* DevOps footer */}
+      {/* DevOps footer with backend status */}
       <footer className="border-t border-zinc-800 bg-black/80 px-8 py-3 text-[11px] text-zinc-500 flex flex-wrap gap-4 justify-between">
         <span>Region: eu-west-1 · Environment: dev-local</span>
-        <span>Build: v0.1.0 · Deploy: GitHub Actions (planned)</span>
+        <span>
+          Backend:{" "}
+          {backendStatus?.status === "running"
+            ? `✔️ OK (${backendStatus.region})`
+            : "❌ Offline"}
+        </span>
       </footer>
 
       {/* Movie details modal */}

@@ -1,7 +1,15 @@
-import React from "react";
-import { movieSections } from "../data/movies";
+import React, { useState } from "react";
+import { movieSections, type MovieItem } from "../data/movies";
+import MovieDetailsModal from "../components/MovieDetailsModal";
+
+type SelectedMovie = {
+  sectionTitle: string;
+  item: MovieItem;
+};
 
 export default function Browse() {
+  const [selected, setSelected] = useState<SelectedMovie | null>(null);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white flex flex-col">
       {/* Top nav */}
@@ -70,6 +78,9 @@ export default function Browse() {
                 {section.items.map((item) => (
                   <button
                     key={item.id}
+                    onClick={() =>
+                      setSelected({ sectionTitle: section.title, item })
+                    }
                     className="relative w-40 h-24 md:w-52 md:h-32 flex-shrink-0 rounded-md bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-red-600 hover:-translate-y-1 transition-all duration-150"
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -89,11 +100,20 @@ export default function Browse() {
         </main>
       </div>
 
-      {/* DevOps footer (D) */}
+      {/* DevOps footer */}
       <footer className="border-t border-zinc-800 bg-black/80 px-8 py-3 text-[11px] text-zinc-500 flex flex-wrap gap-4 justify-between">
         <span>Region: eu-west-1 · Environment: dev-local</span>
         <span>Build: v0.1.0 · Deploy: GitHub Actions (planned)</span>
       </footer>
+
+      {/* Movie details modal */}
+      {selected && (
+        <MovieDetailsModal
+          sectionTitle={selected.sectionTitle}
+          item={selected.item}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 }

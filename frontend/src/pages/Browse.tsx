@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { movieSections, type MovieItem } from "../data/movies";
@@ -18,7 +18,16 @@ export default function Browse() {
 
   const navigate = useNavigate();
 
+  // Single audio instance for Àh-boom
+  const boomRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
+    // prepare boom audio (served from public root by Vite/NGINX)
+    boomRef.current = new Audio("/ah-boom.wav");
+    if (boomRef.current) {
+      boomRef.current.volume = 0.9;
+    }
+
     // check backend health
     getBackendStatus().then(setBackendStatus);
 
@@ -31,6 +40,22 @@ export default function Browse() {
       }
     });
   }, []);
+
+  const handlePlayDemo = () => {
+    // play Àh-boom, then navigate to watch page
+    if (boomRef.current) {
+      try {
+        boomRef.current.currentTime = 0;
+        boomRef.current.play().catch(() => {
+          // ignore autoplay / user gesture errors
+        });
+      } catch {
+        // ignore
+      }
+    }
+
+    navigate("/watch");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white flex flex-col">
@@ -87,7 +112,7 @@ export default function Browse() {
             </p>
             <div className="flex flex-wrap gap-3 text-sm">
               <button
-                onClick={() => navigate("/watch")}
+                onClick={handlePlayDemo}
                 className="inline-flex items-center gap-2 rounded-md bg-white text-black px-4 py-2 font-semibold hover:bg-zinc-200 transition-colors"
               >
                 ▶ Play Demo Stream

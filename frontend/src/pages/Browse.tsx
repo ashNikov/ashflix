@@ -13,9 +13,8 @@ type SelectedMovie = {
 export default function Browse() {
   const [selected, setSelected] = useState<SelectedMovie | null>(null);
   const [backendStatus, setBackendStatus] = useState<any | null>(null);
-
-  // frontend state for sections – start with local demo data as fallback
   const [sections, setSections] = useState(movieSections);
+  const [showAuth, setShowAuth] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,7 +27,6 @@ export default function Browse() {
       if (data && Array.isArray(data.sections)) {
         setSections(data.sections);
       } else {
-        // if API fails, we just keep using local movieSections
         console.warn("Using local fallback sections – catalog API unavailable.");
       }
     });
@@ -57,7 +55,12 @@ export default function Browse() {
         </nav>
 
         <div className="flex items-center gap-3 text-xs text-zinc-300">
-          <span className="hidden sm:inline text-zinc-400">Profile</span>
+          <button
+            onClick={() => setShowAuth(true)}
+            className="px-3 py-1 rounded-md border border-red-600/70 bg-black/40 hover:bg-red-600 hover:text-white transition-colors text-[11px] font-semibold"
+          >
+            Sign In
+          </button>
           <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-600" />
         </div>
       </header>
@@ -79,8 +82,8 @@ export default function Browse() {
             </h1>
             <p className="text-sm md:text-base text-zinc-300 max-w-xl mb-6">
               This dashboard simulates a real streaming control center. Each row
-              will be wired to live APIs, AI-powered recommendations and
-              DevSecOps observability as the project grows.
+              is backed by API data and can later be wired to real streams,
+              AI-powered recommendations and observability.
             </p>
             <div className="flex flex-wrap gap-3 text-sm">
               <button
@@ -89,14 +92,17 @@ export default function Browse() {
               >
                 ▶ Play Demo Stream
               </button>
-              <button className="inline-flex items-center gap-2 rounded-md bg-zinc-800 text-white px-4 py-2 font-semibold border border-zinc-600 hover:bg-zinc-700 transition-colors">
-                ⓘ View Architecture
+              <button
+                onClick={() => setShowAuth(true)}
+                className="inline-flex items-center gap-2 rounded-md bg-zinc-800 text-white px-4 py-2 font-semibold border border-zinc-600 hover:bg-zinc-700 transition-colors"
+              >
+                🔐 Open Auth Panel
               </button>
             </div>
           </div>
         </section>
 
-        {/* Rows (now driven by backend sections) */}
+        {/* Rows (driven by backend sections) */}
         <main className="space-y-8 pb-10">
           {sections.map((section: any, index: number) => (
             <motion.section
@@ -169,6 +175,70 @@ export default function Browse() {
           item={selected.item}
           onClose={() => setSelected(null)}
         />
+      )}
+
+      {/* Auth slide-over panel */}
+      {showAuth && (
+        <div className="fixed inset-0 z-30 flex">
+          <button
+            className="flex-1 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowAuth(false)}
+          />
+          <div className="w-full max-w-md bg-zinc-950 border-l border-red-900/50 px-6 py-6 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold">
+                Sign in to <span className="text-red-500">AshFlix</span>
+              </h2>
+              <button
+                onClick={() => setShowAuth(false)}
+                className="text-zinc-400 hover:text-white text-xs"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-400 mb-4">
+              This is a **demo authentication panel**. Later, it can be wired to
+              real identity (Cognito, JWT, or a custom auth service) as part of
+              your DevSecOps pipeline.
+            </p>
+
+            <form
+              className="space-y-3 text-xs"
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Demo only – real auth coming in DevSecOps phase.");
+              }}
+            >
+              <div className="space-y-1">
+                <label className="block text-zinc-400">Email</label>
+                <input
+                  type="email"
+                  className="w-full rounded-md bg-black border border-zinc-700 px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-500"
+                  placeholder="uwem@example.com"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-zinc-400">Password</label>
+                <input
+                  type="password"
+                  className="w-full rounded-md bg-black border border-zinc-700 px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-500"
+                  placeholder="••••••••"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full mt-2 rounded-md bg-red-600 text-white py-2 text-xs font-semibold hover:bg-red-500 transition-colors"
+              >
+                Sign in (Demo)
+              </button>
+              <p className="text-[10px] text-zinc-500 mt-2">
+                For portfolio purposes only. No real credentials are sent
+                anywhere.
+              </p>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

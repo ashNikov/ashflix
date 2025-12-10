@@ -10,3 +10,8 @@ output "region" {
   value = var.aws_region
 }
 
+output "backend_ecr_repo_url" {
+  description = "ECR repository URL for the AshFlix backend image"
+  value       = aws_ecr_repository.ashflix_backend.repository_url
+}
+

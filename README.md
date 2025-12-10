@@ -53,9 +53,6 @@ flowchart LR
 
     Docker --> FEContainer[Frontend Container (Nginx)]
     Docker --> BEContainer[Backend Container]
-
-    FEContainer --> User[(User Browser)]
-    BEContainer --> User
 ```
 
 ---

@@ -12,6 +12,7 @@
 
 ---
 
+
 # 📌 Overview  
 AshFlix is a **Netflix-style AI streaming platform** built as a **full DevSecOps + Cloud Engineering showcase**.  
 It demonstrates:

@@ -15,3 +15,8 @@ output "backend_ecr_repo_url" {
   value       = aws_ecr_repository.ashflix_backend.repository_url
 }
 
+output "backend_apprunner_url" {
+  description = "Public HTTPS URL for the AshFlix backend App Runner service"
+  value       = aws_apprunner_service.ashflix_backend.service_url
+}
+

@@ -1,3 +1,4 @@
+import BackendDebugPanel from "../components/BackendDebugPanel";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,7 +14,7 @@ type SelectedMovie = {
 export default function Browse() {
   const [selected, setSelected] = useState<SelectedMovie | null>(null);
   const [backendStatus, setBackendStatus] = useState<any | null>(null);
-  const [sections, setSections] = useState(movieSections);
+  const [sections, setSections] = useState<any[]>([]);
   const [showAuth, setShowAuth] = useState(false);
 
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ export default function Browse() {
         setSections(data.sections);
       } else {
         console.warn("Using local fallback sections – catalog API unavailable.");
+        setSections(movieSections as any);
       }
     });
   }, []);
@@ -57,6 +59,17 @@ export default function Browse() {
     navigate("/watch");
   };
 
+  // ✅ Loading screen (only when no data yet)
+  if (!sections || sections.length === 0) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center text-zinc-400 py-20">
+          Loading catalog from backend...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white flex flex-col">
       {/* Top nav */}
@@ -65,9 +78,7 @@ export default function Browse() {
           <div className="w-9 h-9 rounded-md bg-black border border-red-600 flex items-center justify-center">
             <span className="text-red-600 font-extrabold text-lg">AF</span>
           </div>
-          <span className="text-xl font-semibold tracking-wide">
-            AshFlix
-          </span>
+          <span className="text-xl font-semibold tracking-wide">AshFlix</span>
         </div>
 
         <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-300">
@@ -136,7 +147,11 @@ export default function Browse() {
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+              transition={{
+                duration: 0.4,
+                delay: index * 0.05,
+                ease: "easeOut",
+              }}
             >
               <motion.h2
                 className="text-lg font-semibold mb-3 flex items-center gap-2"
@@ -148,6 +163,7 @@ export default function Browse() {
                 <span>{section.title}</span>
                 <span className="h-px w-10 bg-red-600/70 rounded-full" />
               </motion.h2>
+
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {section.items.map((item: any) => (
                   <button
@@ -166,9 +182,11 @@ export default function Browse() {
                   >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-300 bg-gradient-to-t from-red-900/40 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
                     <span className="absolute bottom-2 left-2 text-[11px] text-zinc-200 font-medium group-hover:translate-y-[-2px] transition-all">
                       {item.title}
                     </span>
+
                     {item.tag && (
                       <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full bg-red-600/80 text-white group-hover:scale-110 transition-transform">
                         {item.tag}
@@ -180,6 +198,11 @@ export default function Browse() {
             </motion.section>
           ))}
         </main>
+
+        {/* DevOps backend debug panel */}
+        <section className="px-8 pb-6">
+          <BackendDebugPanel />
+        </section>
       </div>
 
       {/* DevOps footer with backend status */}
@@ -223,7 +246,7 @@ export default function Browse() {
             </div>
 
             <p className="text-xs text-zinc-400 mb-4">
-              This is a **demo authentication panel**. Later, it can be wired to
+              This is a demo authentication panel. Later, it can be wired to
               real identity (Cognito, JWT, or a custom auth service) as part of
               your DevSecOps pipeline.
             </p>
@@ -243,6 +266,7 @@ export default function Browse() {
                   placeholder="uwem@example.com"
                 />
               </div>
+
               <div className="space-y-1">
                 <label className="block text-zinc-400">Password</label>
                 <input
@@ -251,12 +275,14 @@ export default function Browse() {
                   placeholder="••••••••"
                 />
               </div>
+
               <button
                 type="submit"
                 className="w-full mt-2 rounded-md bg-red-600 text-white py-2 text-xs font-semibold hover:bg-red-500 transition-colors"
               >
                 Sign in (Demo)
               </button>
+
               <p className="text-[10px] text-zinc-500 mt-2">
                 For portfolio purposes only. No real credentials are sent
                 anywhere.

@@ -2,19 +2,50 @@ import BackendDebugPanel from "../components/BackendDebugPanel";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { movieSections, type MovieItem } from "../data/movies";
 import MovieDetailsModal from "../components/MovieDetailsModal";
 import { getBackendStatus, getCatalogSections } from "../api/client";
+
+type MovieItem = {
+  id: string;
+  title: string;
+  tag?: string;
+};
 
 type SelectedMovie = {
   sectionTitle: string;
   item: MovieItem;
 };
 
+type CatalogSection = {
+  id: string;
+  title: string;
+  items: MovieItem[];
+};
+
+// --- env helpers (Vite) ---
+const MODE = import.meta.env.MODE; // "development" | "production" | "test"
+const IS_PROD = MODE === "production";
+const ENV_LABEL = IS_PROD ? "production" : "dev-local";
+
+function safeHost(urlLike: string | undefined) {
+  if (!urlLike) return "unknown";
+  try {
+    const u = new URL(urlLike);
+    return u.host;
+  } catch {
+    // maybe it is already a host
+    return urlLike.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+  }
+}
+
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL as string | undefined) || "";
+const BACKEND_HOST = safeHost(BACKEND_URL);
+
 export default function Browse() {
   const [selected, setSelected] = useState<SelectedMovie | null>(null);
   const [backendStatus, setBackendStatus] = useState<any | null>(null);
-  const [sections, setSections] = useState<any[]>([]);
+  const [sections, setSections] = useState<CatalogSection[]>([]);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
   const [showAuth, setShowAuth] = useState(false);
 
   const navigate = useNavigate();
@@ -32,15 +63,24 @@ export default function Browse() {
     // check backend health
     getBackendStatus().then(setBackendStatus);
 
-    // fetch catalog sections from backend
-    getCatalogSections().then((data) => {
-      if (data && Array.isArray(data.sections)) {
-        setSections(data.sections);
-      } else {
-        console.warn("Using local fallback sections – catalog API unavailable.");
-        setSections(movieSections as any);
-      }
-    });
+    // fetch catalog sections from backend (NO local fallback)
+    getCatalogSections()
+      .then((data) => {
+        if (data && Array.isArray(data.sections) && data.sections.length > 0) {
+          setSections(data.sections as any);
+          setCatalogError(null);
+          return;
+        }
+
+        setSections([]);
+        setCatalogError(
+          "Catalog API no return data. Abeg confirm backend dey run and /api/catalog dey work."
+        );
+      })
+      .catch(() => {
+        setSections([]);
+        setCatalogError("Catalog API fail. Check backend, CORS, and VITE_BACKEND_URL.");
+      });
   }, []);
 
   const handlePlayDemo = () => {
@@ -59,12 +99,40 @@ export default function Browse() {
     navigate("/watch");
   };
 
-  // ✅ Loading screen (only when no data yet)
+  // Loading / Error screen (when no sections yet)
   if (!sections || sections.length === 0) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center text-zinc-400 py-20">
-          Loading catalog from backend...
+        <div className="text-center text-zinc-400 py-20 max-w-xl px-6">
+          {!catalogError ? (
+            <div>Loading catalog from backend...</div>
+          ) : (
+            <>
+              <div className="text-red-400 font-semibold mb-2">
+                Backend catalog connection problem
+              </div>
+              <div className="text-zinc-400 text-sm">{catalogError}</div>
+
+              <div className="mt-6 text-xs text-zinc-500 space-y-1">
+                <div>Quick checks:</div>
+                <div>- Backend: http://localhost:5001/health</div>
+                <div>- Catalog: http://localhost:5001/api/catalog</div>
+                <div>- Frontend env: VITE_BACKEND_URL</div>
+                <div>
+                  - Current MODE: <span className="text-zinc-300">{MODE}</span>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center gap-2 rounded-md bg-zinc-800 text-white px-4 py-2 font-semibold border border-zinc-600 hover:bg-zinc-700 transition-colors text-sm"
+                >
+                  🔄 Reload
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -85,9 +153,7 @@ export default function Browse() {
           <button className="hover:text-white transition-colors">Home</button>
           <button className="hover:text-white transition-colors">Series</button>
           <button className="hover:text-white transition-colors">Films</button>
-          <button className="hover:text-white transition-colors">
-            New &amp; Hot
-          </button>
+          <button className="hover:text-white transition-colors">New &amp; Hot</button>
         </nav>
 
         <div className="flex items-center gap-3 text-xs text-zinc-300">
@@ -110,16 +176,15 @@ export default function Browse() {
               AshFlix Original · AI Curated
             </p>
             <p className="text-[10px] tracking-wider text-zinc-500 mb-3">
-              Powered by{" "}
-              <span className="text-red-500 font-semibold">UWEM</span>
+              Powered by <span className="text-red-500 font-semibold">UWEM</span>
             </p>
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Where cinematic streams meet intelligent automation.
             </h1>
             <p className="text-sm md:text-base text-zinc-300 max-w-xl mb-6">
-              This dashboard simulates a real streaming control center. Each row
-              is backed by API data and can later be wired to real streams,
-              AI-powered recommendations and observability.
+              This dashboard simulates a real streaming control center. Each row is backed by API
+              data and can later be wired to real streams, AI-powered recommendations and
+              observability.
             </p>
             <div className="flex flex-wrap gap-3 text-sm">
               <button
@@ -168,9 +233,7 @@ export default function Browse() {
                 {section.items.map((item: any) => (
                   <button
                     key={item.id}
-                    onClick={() =>
-                      setSelected({ sectionTitle: section.title, item })
-                    }
+                    onClick={() => setSelected({ sectionTitle: section.title, item })}
                     className="
                       group relative w-40 h-24 md:w-52 md:h-32 flex-shrink-0 rounded-md
                       bg-zinc-900 border border-zinc-800 overflow-hidden
@@ -207,7 +270,16 @@ export default function Browse() {
 
       {/* DevOps footer with backend status */}
       <footer className="border-t border-zinc-800 bg-black/80 px-8 py-3 text-[11px] text-zinc-500 flex flex-wrap gap-4 justify-between">
-        <span>Region: eu-west-1 · Environment: dev-local</span>
+        <span>
+          Region: eu-west-1 · Environment: {ENV_LABEL}
+          {IS_PROD && BACKEND_HOST !== "unknown" ? (
+            <>
+              {" "}
+              · Backend: <span className="text-zinc-300">{BACKEND_HOST}</span>
+            </>
+          ) : null}
+        </span>
+
         <span>
           Backend:{" "}
           {backendStatus?.status === "running"
@@ -246,9 +318,8 @@ export default function Browse() {
             </div>
 
             <p className="text-xs text-zinc-400 mb-4">
-              This is a demo authentication panel. Later, it can be wired to
-              real identity (Cognito, JWT, or a custom auth service) as part of
-              your DevSecOps pipeline.
+              This is a demo authentication panel. Later, it can be wired to real identity (Cognito,
+              JWT, or a custom auth service) as part of your DevSecOps pipeline.
             </p>
 
             <form
@@ -284,8 +355,7 @@ export default function Browse() {
               </button>
 
               <p className="text-[10px] text-zinc-500 mt-2">
-                For portfolio purposes only. No real credentials are sent
-                anywhere.
+                For portfolio purposes only. No real credentials are sent anywhere.
               </p>
             </form>
           </div>
@@ -294,4 +364,3 @@ export default function Browse() {
     </div>
   );
 }
-

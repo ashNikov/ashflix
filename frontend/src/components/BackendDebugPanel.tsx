@@ -1,17 +1,14 @@
-// frontend/src/components/BackendDebugPanel.tsx
-
 import { useEffect, useState } from "react";
 import { getBackendStatus, getCatalogSections } from "../api/client";
 
 type LoadState = "idle" | "loading" | "success" | "error";
 
-// Local type definitions (to match what the backend returns)
 type HealthResponse = {
-  service: string;
-  status: string;
-  region: string;
-  poweredBy: string;
-  uptimeSeconds: number;
+  service?: string;
+  status?: string;
+  region?: string;
+  poweredBy?: string;
+  uptimeSeconds?: number;
 };
 
 type CatalogItem = {
@@ -27,7 +24,7 @@ type CatalogSection = {
 };
 
 type CatalogResponse = {
-  sections: CatalogSection[];
+  sections?: CatalogSection[];
 };
 
 export default function BackendDebugPanel() {
@@ -37,25 +34,41 @@ export default function BackendDebugPanel() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     async function run() {
       try {
         setState("loading");
+
         const [h, c] = await Promise.all([
           getBackendStatus(),
           getCatalogSections(),
         ]);
-        setHealth(h);
-        setCatalog(c);
+
+        if (!mounted) return;
+
+        setHealth((h ?? null) as HealthResponse | null);
+        setCatalog((c ?? null) as CatalogResponse | null);
+        setError(null);
         setState("success");
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Backend debug error:", err);
-        setError(err?.message || "Unknown error");
+        if (!mounted) return;
+
+        const msg =
+          err instanceof Error ? err.message : "Unknown error (check logs)";
+        setError(msg);
         setState("error");
       }
     }
 
     run();
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const sections = catalog?.sections ?? [];
 
   return (
     <div
@@ -69,6 +82,7 @@ export default function BackendDebugPanel() {
       }}
     >
       <strong>Backend connection debug</strong>
+
       <div style={{ marginTop: "0.5rem" }}>
         State:{" "}
         <span
@@ -93,27 +107,29 @@ export default function BackendDebugPanel() {
 
       {health && (
         <div style={{ marginTop: "0.5rem" }}>
-          <div>Service: {health.service}</div>
-          <div>Status: {health.status}</div>
-          <div>Region: {health.region}</div>
-          <div>Powered by: {health.poweredBy}</div>
-          <div>Uptime (s): {health.uptimeSeconds}</div>
+          {health.service && <div>Service: {health.service}</div>}
+          {health.status && <div>Status: {health.status}</div>}
+          {health.region && <div>Region: {health.region}</div>}
+          {health.poweredBy && <div>Powered by: {health.poweredBy}</div>}
+          {typeof health.uptimeSeconds === "number" && (
+            <div>Uptime (s): {health.uptimeSeconds}</div>
+          )}
         </div>
       )}
 
-      {catalog && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <div>Sections from backend: {catalog.sections.length}</div>
+      <div style={{ marginTop: "0.75rem" }}>
+        <div>Sections from backend: {sections.length}</div>
+
+        {sections.length > 0 && (
           <ul style={{ marginTop: "0.25rem", paddingLeft: "1.2rem" }}>
-            {catalog.sections.slice(0, 3).map((s) => (
+            {sections.slice(0, 3).map((s) => (
               <li key={s.id}>
-                {s.title} ({s.items.length} items)
+                {s.title} ({s.items?.length ?? 0} items)
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
-

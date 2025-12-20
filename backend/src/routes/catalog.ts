@@ -2,8 +2,8 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/sections", (_req, res) => {
-  const sections = [
+function buildSections() {
+  return [
     {
       id: "prophecy-end-times",
       title: "Prophecy & End-Times",
@@ -97,7 +97,17 @@ router.get("/sections", (_req, res) => {
       ],
     },
   ];
+}
 
+// ✅ Main endpoint the UI calls: GET /api/catalog
+router.get("/", (_req, res) => {
+  const sections = buildSections();
+  return res.json({ sections });
+});
+
+// ✅ Keep old endpoint too: GET /api/catalog/sections
+router.get("/sections", (_req, res) => {
+  const sections = buildSections();
   return res.json({
     service: "AshFlix Catalog",
     region: "eu-west-1",
@@ -107,4 +117,3 @@ router.get("/sections", (_req, res) => {
 });
 
 export default router;
-

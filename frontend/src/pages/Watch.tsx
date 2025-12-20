@@ -30,7 +30,7 @@ export default function Watch() {
 
         <div className="flex items-center gap-4 text-xs text-zinc-300">
           <span className="hidden sm:inline text-zinc-400">
-            Streaming · DevSecOps Demo
+            Streaming · CloudFront Demo
           </span>
           <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-600" />
         </div>
@@ -47,7 +47,6 @@ export default function Watch() {
                 controls
                 autoPlay
                 muted
-                // Try local demo first, then fall back to remote sample
                 src={localDemoSrc}
                 onError={(e) => {
                   const video = e.currentTarget;
@@ -65,12 +64,12 @@ export default function Watch() {
           {/* Title + meta */}
           <div className="space-y-2">
             <h1 className="text-xl md:text-2xl font-semibold">
-              AshFlix DevOps Stream · Demo Playback
+              AshFlix Demo Stream · Cloud Deployment
             </h1>
             <p className="text-xs md:text-sm text-zinc-400 max-w-2xl">
-              This screen simulates a real streaming session powered by your
-              own backend and infrastructure. Later, this player can be wired
-              to real assets in S3, CloudFront, or a Kubernetes cluster.
+              This screen simulates a production streaming session delivered
+              via S3 + CloudFront. The backend runs on AWS App Runner and is
+              consumed securely over HTTPS.
             </p>
 
             <div className="flex flex-wrap gap-2 text-[11px] md:text-xs text-zinc-300">
@@ -78,10 +77,10 @@ export default function Watch() {
                 UWEM · DevSecOps
               </span>
               <span className="px-2 py-0.5 rounded-full bg-zinc-800 border border-zinc-600">
-                4K · Dolby-ish 🤫
+                CDN · CloudFront
               </span>
               <span className="px-2 py-0.5 rounded-full bg-zinc-800 border border-zinc-600">
-                Demo Stream · Non-production
+                Demo · Production-like
               </span>
             </div>
           </div>
@@ -94,52 +93,52 @@ export default function Watch() {
             <dl className="space-y-1 text-xs text-zinc-300">
               <div className="flex justify-between">
                 <dt className="text-zinc-500">Title</dt>
-                <dd className="text-right">“AshFlix: Helix Intro Demo”</dd>
+                <dd className="text-right">AshFlix Helix Demo</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Profile</dt>
-                <dd className="text-right">UWEM · Owner</dd>
+                <dt className="text-zinc-500">Owner</dt>
+                <dd className="text-right">UWEM</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Source</dt>
-                <dd className="text-right">Local /demo or sample URL</dd>
+                <dt className="text-zinc-500">Delivery</dt>
+                <dd className="text-right">S3 + CloudFront</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-zinc-500">Playback</dt>
-                <dd className="text-right">HTML5 Player</dd>
+                <dt className="text-zinc-500">Player</dt>
+                <dd className="text-right">HTML5</dd>
               </div>
             </dl>
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-black/60 px-4 py-4">
-            <h2 className="text-sm font-semibold mb-2">DevOps Telemetry (Mock)</h2>
+            <h2 className="text-sm font-semibold mb-2">
+              DevOps Telemetry (Demo)
+            </h2>
             <div className="grid grid-cols-2 gap-3 text-xs text-zinc-300">
-              <div className="space-y-0.5">
+              <div>
                 <p className="text-zinc-500">Region</p>
                 <p className="font-medium">eu-west-1</p>
               </div>
-              <div className="space-y-0.5">
+              <div>
                 <p className="text-zinc-500">Environment</p>
-                <p className="font-medium">dev-local</p>
+                <p className="font-medium">prod-cloud</p>
               </div>
-              <div className="space-y-0.5">
+              <div>
                 <p className="text-zinc-500">Latency</p>
-                <p className="font-medium">&lt; 40 ms (mock)</p>
+                <p className="font-medium">&lt; 40 ms</p>
               </div>
-              <div className="space-y-0.5">
-                <p className="text-zinc-500">Edge POP</p>
-                <p className="font-medium">LHR50 (simulated)</p>
+              <div>
+                <p className="text-zinc-500">Edge</p>
+                <p className="font-medium">CloudFront POP</p>
               </div>
-              <div className="space-y-0.5">
+              <div>
                 <p className="text-zinc-500">Status</p>
-                <p className="font-medium text-emerald-400">
-                  Healthy · 200 OK
-                </p>
+                <p className="font-medium text-emerald-400">Healthy</p>
               </div>
-              <div className="space-y-0.5">
+              <div>
                 <p className="text-zinc-500">Stream ID</p>
                 <p className="font-medium truncate">
-                  ashflix-demo-stream-uwem
+                  ashflix-demo-prod
                 </p>
               </div>
             </div>
@@ -147,13 +146,14 @@ export default function Watch() {
 
           <div className="rounded-2xl border border-red-900/60 bg-black/70 px-4 py-3 text-[11px] text-zinc-300">
             <p className="mb-1">
-              <span className="text-red-400 font-semibold">Powered by UWEM</span>{" "}
-              · This page will later be wired to real infra: S3, CloudFront,
-              Lambda or Kubernetes, plus full DevSecOps pipeline.
+              <span className="text-red-400 font-semibold">
+                Production-style deployment
+              </span>{" "}
+              · This demo runs fully on AWS infrastructure.
             </p>
             <p className="text-zinc-500">
-              For now, it acts as a cinematic demo to show recruiters how you
-              think about streaming + observability.
+              Built to demonstrate DevSecOps, CI/CD, and cloud architecture
+              thinking.
             </p>
           </div>
         </aside>
@@ -161,10 +161,9 @@ export default function Watch() {
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 bg-black/80 px-6 md:px-10 py-3 text-[11px] text-zinc-500 flex flex-wrap gap-4 justify-between">
-        <span>Region: eu-west-1 · Environment: dev-local</span>
-        <span>AshFlix Watch · Built &amp; Powered by UWEM</span>
+        <span>Region: eu-west-1 · Environment: prod-cloud</span>
+        <span>AshFlix Watch · Powered by UWEM</span>
       </footer>
     </div>
   );
 }
-

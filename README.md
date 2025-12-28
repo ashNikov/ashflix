@@ -8,29 +8,29 @@
 ---
 
 **AshFlix** is a **Netflix-inspired streaming SaaS demo** built with a **real-world DevSecOps architecture**.  
-It showcases production-style AWS infrastructure, secure CI/CD workflows, and cloud-native deployment patterns — all **free-tier conscious**.
+It showcases production-style AWS infrastructure, secure CI/CD workflows, and cloud-native deployment patterns — all **free-tier conscious** and portfolio-ready.
 
 ---
 
 ## 🧠 Highlights
 
-⚙️ Full-stack cloud architecture  
-🎨 Netflix-style React UI (Vite)  
-☁️ AWS S3 + CloudFront global delivery  
-🐳 Containerized backend on AWS App Runner  
-🛠️ Infrastructure-as-Code with Terraform  
-🔐 Security-first DevSecOps practices  
-🚀 Production deployment with CI/CD (frontend)
+- ⚙️ Full-stack cloud architecture
+- 🎨 Netflix-style React UI (Vite)
+- ☁️ AWS S3 + CloudFront global delivery
+- 🐳 Containerized backend on AWS App Runner
+- 🛠️ Infrastructure-as-Code with Terraform
+- 🔐 Security-first DevSecOps practices
+- 🚀 Production deployment with CI/CD (frontend)
 
 ---
 
 ## 🚀 Live Demo
 
 🌍 **Frontend (CloudFront)**  
-👉 https://d18qc73pgklufe.cloudfront.net  
+👉 https://d18qc73pgklufe.cloudfront.net
 
 🧠 **Backend (AWS App Runner)**  
-👉 https://p3xh7pammx.eu-west-1.awsapprunner.com  
+👉 https://p3xh7pammx.eu-west-1.awsapprunner.com
 
 ---
 
@@ -94,7 +94,7 @@ Catalog API
 http
 Copy code
 GET /api/catalog
-Response (Sample)
+Sample Response
 
 json
 Copy code
@@ -113,7 +113,7 @@ Copy code
   ]
 }
 🔄 CI/CD Pipeline (Safe Mode)
-Current Scope: Frontend only
+Current scope: Frontend only
 
 Trigger: push to main
 
@@ -125,14 +125,35 @@ Sync build artifacts to S3
 
 CloudFront cache invalidation
 
-❗ Intentionally Disabled
+Intentionally disabled
+
 ❌ No backend auto-deploy
 
 ❌ No Terraform apply in CI
 
 ❌ No secrets committed to repository
 
-This design ensures maximum safety, cost control, and auditability.
+This design prioritizes safety, cost control, and auditability.
+
+📊 Monitoring & Observability
+CloudWatch Logs & Metrics
+AWS App Runner automatically publishes logs to CloudWatch Logs
+
+Managed metrics include CPU, memory, request count, and latency
+
+CloudWatch Alarm
+Alarm name: ashflix-backend-high-cpu
+
+Service: AWS App Runner (ashflix-backend)
+
+Metric: CPUUtilization
+
+Condition: CPU > 70% for 10 minutes (2 datapoints)
+
+Purpose: Early detection of backend resource saturation
+
+Note: Due to organization-level IAM/SCP guardrails, this alarm was bootstrapped via the AWS Console.
+This reflects real-world enterprise constraints while maintaining full observability via CloudWatch.
 
 🔐 Security & DevSecOps Practices
 IAM-scoped AWS credentials
@@ -166,7 +187,7 @@ Docker
 
 AWS App Runner
 
-Infrastructure
+Infrastructure & DevOps
 AWS S3
 
 AWS CloudFront
@@ -191,30 +212,25 @@ ashflix/
 │   └── ecr/
 ├── .github/workflows/ # CI/CD pipelines
 └── README.md
-🛣️ Roadmap (Planned Features)
-(Future work – NOT implemented today)
----
+🎬 AshFlix Helix Ident (Brand Intro)
+AshFlix includes a signature Helix Ident concept inspired by modern streaming platforms:
 
-## 🎬 AshFlix Helix Ident (Brand Intro)
+Visual: Subtle helix / arc motion resolving into the AshFlix mark
 
-AshFlix includes a signature intro concept inspired by modern streaming platforms — a short **Helix Ident** that plays on first load:
+Sound cue: Short “Àh-boom” hit synced to logo lock-in
 
-- **Visual:** subtle helix/arc motion that resolves into the AshFlix mark
-- **Sound cue:** a short “Àh-boom” hit synced to the logo lock-in
-- **Goal:** instantly brand the experience like a real streaming product
+Goal: Immediate brand recognition like a real streaming product
 
-### Where it lives in the app
-- Intro animation: `frontend/src/...` (UI intro component)
-- Sound asset: `frontend/public/...` (served from the static root)
-- Playback triggered on: first load / route entry (client-side)
+Planned enhancements
 
-### Future upgrades (planned)
-- User setting: “Skip Intro”
-- Preload audio for mobile autoplay restrictions
-- Fallback silent mode when audio is blocked
+Skip intro option
 
+Mobile autoplay-safe audio handling
+
+Silent fallback mode
+
+🛣️ Roadmap (Planned – Not Implemented)
 🎥 Streaming & Media
-
 Adaptive video streaming
 
 Auth-gated content
@@ -222,7 +238,6 @@ Auth-gated content
 User watch history
 
 ⚙️ Platform & DevOps
-
 Backend CI/CD with OIDC
 
 ECS Fargate migration
@@ -234,19 +249,19 @@ CloudWatch dashboards
 Multi-environment Terraform
 
 🎯 Why This Project Matters
-AshFlix is Demo SASS project.
+AshFlix is a realistic DevSecOps portfolio project, not a toy app.
 
 It demonstrates:
 
-real AWS deployments
+Real AWS deployments
 
 CI/CD discipline
 
-infrastructure ownership
+Infrastructure ownership
 
-security-first thinking
+Security-first thinking
 
-production-grade decision making
+Production-grade decision making
 
 Built intentionally for DevOps / Cloud / Platform Engineer interviews.
 

@@ -193,6 +193,25 @@ ashflix/
 └── README.md
 🛣️ Roadmap (Planned Features)
 (Future work – NOT implemented today)
+---
+
+## 🎬 AshFlix Helix Ident (Brand Intro)
+
+AshFlix includes a signature intro concept inspired by modern streaming platforms — a short **Helix Ident** that plays on first load:
+
+- **Visual:** subtle helix/arc motion that resolves into the AshFlix mark
+- **Sound cue:** a short “Àh-boom” hit synced to the logo lock-in
+- **Goal:** instantly brand the experience like a real streaming product
+
+### Where it lives in the app
+- Intro animation: `frontend/src/...` (UI intro component)
+- Sound asset: `frontend/public/...` (served from the static root)
+- Playback triggered on: first load / route entry (client-side)
+
+### Future upgrades (planned)
+- User setting: “Skip Intro”
+- Preload audio for mobile autoplay restrictions
+- Fallback silent mode when audio is blocked
 
 🎥 Streaming & Media
 
@@ -215,7 +234,7 @@ CloudWatch dashboards
 Multi-environment Terraform
 
 🎯 Why This Project Matters
-AshFlix is not a toy app.
+AshFlix is Demo SASS project.
 
 It demonstrates:
 

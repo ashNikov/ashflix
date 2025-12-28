@@ -29,7 +29,7 @@ It showcases production-style AWS infrastructure, secure CI/CD workflows, and cl
 🌍 **Frontend (CloudFront)**  
 👉 https://d18qc73pgklufe.cloudfront.net  
 
-🧠 **Backend (App Runner)**  
+🧠 **Backend (AWS App Runner)**  
 👉 https://p3xh7pammx.eu-west-1.awsapprunner.com  
 
 ---
@@ -48,7 +48,7 @@ It showcases production-style AWS infrastructure, secure CI/CD workflows, and cl
 ## 🤖 Backend Features (Implemented)
 
 - Node.js + Express API
-- Dockerized container image
+- Dockerized container
 - Hosted on AWS App Runner
 - HTTPS enabled by default
 - `/health` endpoint
@@ -131,7 +131,7 @@ CloudFront cache invalidation
 
 ❌ No secrets committed to repository
 
-This ensures maximum safety, cost control, and auditability.
+This design ensures maximum safety, cost control, and auditability.
 
 🔐 Security & DevSecOps Practices
 IAM-scoped AWS credentials

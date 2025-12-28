@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-  <strong>Netflix-style AI Streaming Demo</strong><br/>
+  <strong>Netflix-Style AI Streaming SaaS Demo</strong><br/>
   DevSecOps • AWS • Terraform • CI/CD • CloudFront • App Runner
 </p>
 
@@ -21,17 +21,18 @@
 
 ---
 
-## 📌 Overview
+## 🧠 Overview
 
-**AshFlix** is a **Netflix-style streaming dashboard** built as a **DevSecOps & Cloud Engineering portfolio project**.
+**AshFlix** is a **Netflix-inspired streaming dashboard** built as a **real-world DevSecOps & Cloud Engineering portfolio project**.
 
-This project focuses on:
-- clean architecture
-- safe infrastructure
-- production-style workflows
-- free-tier-friendly AWS usage
+It is designed to demonstrate:
+- production-style AWS architecture
+- secure infrastructure practices
+- CI/CD discipline
+- free-tier-safe cloud deployments
 
-It is intentionally scoped to **what is actually deployed today**, with future phases clearly marked.
+> ⚠️ This README documents **only what is currently deployed**.  
+> Planned features are clearly marked as *future phases*.
 
 ---
 
@@ -40,9 +41,9 @@ It is intentionally scoped to **what is actually deployed today**, with future p
 | Component | URL |
 |---------|-----|
 | Frontend (CloudFront) | https://d18qc73pgklufe.cloudfront.net |
-| Backend (App Runner) | https://p3xh7pammx.eu-west-1.awsapprunner.com |
-| Health Check | /health |
-| Catalog API | /api/catalog |
+| Backend (AWS App Runner) | https://p3xh7pammx.eu-west-1.awsapprunner.com |
+| Health Endpoint | `/health` |
+| Catalog API | `/api/catalog` |
 
 ---
 
@@ -50,59 +51,64 @@ It is intentionally scoped to **what is actually deployed today**, with future p
 
 ```text
 ashflix/
-├── frontend/          # React + Vite frontend
-├── backend/           # Node.js + Express API
-├── infra/             # Terraform (ECR, App Runner, S3, CloudFront)
-├── .github/workflows/ # CI/CD (frontend-only)
+├── frontend/            # React + Vite frontend
+├── backend/             # Node.js + Express API
+├── infra/               # Terraform IaC
+│   ├── s3-cloudfront/
+│   ├── apprunner/
+│   └── ecr/
+├── .github/workflows/   # CI/CD pipelines
 └── README.md
-
-⚙️ Current Architecture (LIVE)
+🏗️ Current Architecture (LIVE)
 Frontend
-
 React + Vite
 
-Built to static assets
+Static build output
 
-Hosted on S3
+Hosted on Amazon S3
 
-Served globally via CloudFront
+Served globally via Amazon CloudFront
 
 Backend
-
 Node.js + Express
 
-Containerized with Docker
+Dockerized container
 
 Hosted on AWS App Runner
 
 HTTPS enabled by default
 
-Data Flow
+🗺️ Architecture Diagram (Mermaid)
+mermaid
+Copy code
 flowchart LR
-    User --> CF[CloudFront]
+    User[User Browser] --> CF[CloudFront]
     CF --> S3[S3 Static Frontend]
-    S3 -->|API calls| AR[App Runner Backend]
-
-🔄 CI/CD (Safe Mode)
-
-Current CI/CD scope: frontend only
+    S3 -->|API Calls| AR[AWS App Runner]
+    AR --> API[Express API]
+🔄 CI/CD Pipeline (Safe Mode)
+Current CI/CD Scope: Frontend only
 
 Trigger: push to main
 
 Build: Vite production build
 
-Deploy:
+Deploy steps:
 
-Sync to S3
+Sync build to S3
 
-CloudFront cache invalidation
+Invalidate CloudFront cache
 
-❗ No backend auto-deploy
-❗ No Terraform apply in CI
-❗ No secrets committed to repo
+❗ Explicitly Disabled (By Design)
+❌ No backend auto-deploy
+
+❌ No Terraform apply in CI
+
+❌ No secrets committed to repo
+
+This ensures maximum safety and free-tier protection.
 
 🔐 Security & DevSecOps Practices
-
 IAM-scoped AWS credentials
 
 Secrets stored in GitHub Actions Secrets
@@ -111,14 +117,12 @@ CORS locked to CloudFront domain
 
 No hard-coded credentials
 
-Infrastructure managed via Terraform
+Infrastructure defined via Terraform
 
-Free-tier safe design
+Free-tier-aware architecture choices
 
 📦 AWS Services Used
-
-Currently deployed
-
+Currently Deployed
 Amazon S3
 
 Amazon CloudFront
@@ -131,39 +135,35 @@ IAM
 
 Terraform
 
-Planned (future phase)
-
+Planned (Future Phase)
 ECS Fargate
 
 OIDC-based CI/CD
 
-ALB
+Application Load Balancer (ALB)
 
-Secrets Manager
+AWS Secrets Manager
 
 CloudWatch dashboards
 
 🚀 Features
 Frontend
-
 Cinematic Netflix-style UI
 
-Browse catalog (API-driven)
+API-driven movie catalog
 
 Watch page demo player
 
 Backend health debug panel
 
 Backend
-
 /health endpoint
 
 /api/catalog endpoint
 
-Containerized & scalable
+Dockerized & horizontally scalable
 
-🧠 Why This Project Matters
-
+🎯 Why This Project Matters
 AshFlix is not a toy app.
 
 It demonstrates:
@@ -174,16 +174,13 @@ real CI/CD discipline
 
 infrastructure ownership
 
-security awareness
+security-first thinking
 
-production thinking
+production-grade decision making
 
 Built intentionally for DevOps / Cloud / Platform Engineer interviews.
 
 👨‍💻 Author
-
 Uwem Udo (ashNikov)
 DevSecOps & Cloud Engineer
-Portfolio project
-
-
+Portfolio Project

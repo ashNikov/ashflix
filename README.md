@@ -78,7 +78,21 @@ It is intentionally designed to be **free-tier conscious**, **auditable**, and *
 - Terraform for infrastructure management
 
 ---
+## 🐳 Local Development Architecture (Docker Compose)
 
+This diagram represents the **local containerized architecture** used to model production systems before cloud deployment.
+
+```mermaid
+graph TD
+    A["Developer Machine"] -->|Browser :8082| B["API Container (nginx / app)"]
+    B -->|Internal Docker Network| C["PostgreSQL Container"]
+    C --> D["Docker Volume (pgdata)"]
+
+    subgraph Docker Compose Network
+        B
+        C
+    end
+```
 ## 🏗️ High-Level Architecture
 
 ```mermaid

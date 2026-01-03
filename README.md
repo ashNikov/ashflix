@@ -88,6 +88,7 @@ graph TD
     C -->|API Calls| D["AWS App Runner"]
     D --> E["Node.js Express API"]
     E -->|JSON Response| A
+```
 🔌 API Contract (Sample)
 Health Check
 bash

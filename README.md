@@ -93,6 +93,40 @@ graph TD
         C
     end
 ```
+---
+
+## 🔐 Security Boundaries & Trust Zones (AshFlix)
+
+This diagram illustrates **security boundaries, trust zones, and access controls** across the AshFlix platform.
+
+```mermaid
+graph TD
+    U["User / Browser"] -->|HTTPS| CF["CloudFront CDN"]
+
+    CF -->|Allowed Origins Only| FE["S3 Static Frontend"]
+
+    FE -->|CORS-restricted API calls| API["AWS App Runner (API)"]
+
+    API -->|Private Network| DB["PostgreSQL (Managed / Isolated)"]
+
+    subgraph Public Zone
+        U
+        CF
+    end
+
+    subgraph Edge / CDN Zone
+        FE
+    end
+
+    subgraph Private Application Zone
+        API
+    end
+
+    subgraph Data Security Zone
+        DB
+    end
+```
+
 ## 🏗️ High-Level Architecture
 
 ```mermaid

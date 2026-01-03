@@ -1,0 +1,18 @@
+services:
+  ashflix-backend:
+    build: ./backend
+    image: ashflix-backend:latest
+    container_name: ashflix-backend
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+
+  ashflix-frontend:
+    build: ./frontend
+    image: ashflix-frontend:latest
+    container_name: ashflix-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - ashflix-backend
+    restart: unless-stopped
